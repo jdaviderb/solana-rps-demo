@@ -1,12 +1,11 @@
 mod command_handlers;
 mod accounts;
 
-use borsh::{BorshDeserialize, BorshSerialize};
+use borsh::{BorshDeserialize};
 use solana_program::{
-    account_info::{next_account_info, AccountInfo},
+    account_info::{AccountInfo},
     entrypoint,
     entrypoint::ProgramResult,
-    msg,
     program_error::ProgramError,
     pubkey::Pubkey,
 };
@@ -21,10 +20,15 @@ pub fn process_instruction(
     instruction_data: &[u8],
 ) -> ProgramResult {
     let accounts_iter = &mut accounts.iter();
-    let account = next_account_info(accounts_iter)?;
 
-    if account.owner != program_id {
-        return Err(ProgramError::IncorrectProgramId);
+    for account in accounts_iter {
+        if account.is_signer {
+            continue;
+        }
+
+        if account.owner != program_id {
+            return Err(ProgramError::IncorrectProgramId);
+        }
     }
 
     let command_data = command::Account::try_from_slice(&instruction_data)?;
