@@ -31,10 +31,13 @@ pub fn handler(
   match bet::fight(player1, player2) {
     bet::BetResult::DRAW => Err(ProgramError::IncorrectProgramId),
     bet::BetResult::WinnerPlayer1 => {
+      // clean bets
       player_1_account.bet = 0;
-      player_1_account.winners += 1;
       player_2_account.bet = 0;
-      player_1_account.losses += 1;
+      // add point to player 1
+      player_1_account.winners += 1;
+      // add points to player 2
+      player_2_account.losses += 1;
 
       player_1_account.serialize(&mut &mut player1.data.borrow_mut()[..])?;
       player_2_account.serialize(&mut &mut player2.data.borrow_mut()[..])?;
@@ -43,10 +46,13 @@ pub fn handler(
       Ok(())
     },
     bet::BetResult::WinnerPlayer2 => {
-      player_1_account.bet = 0;
-      player_1_account.losses += 1;
-      player_2_account.bet = 0;
-      player_1_account.winners += 1;
+       // clean bets
+       player_1_account.bet = 0;
+       player_2_account.bet = 0;
+       // add point to player 1
+       player_1_account.losses += 1;
+       // add points to player 2
+       player_2_account.winners += 1;
 
       player_1_account.serialize(&mut &mut player1.data.borrow_mut()[..])?;
       player_2_account.serialize(&mut &mut player2.data.borrow_mut()[..])?;

@@ -33,7 +33,7 @@ pub fn process_instruction(
     }
 
     let command_data = command::Account::try_from_slice(&instruction_data)?;
-    return match command_data.data {
+    return match command_data.command {
         config::handlers::CREATE_BET_COMMAND => command_handlers::create_bet::handler(
             program_id, 
             &accounts, 
