@@ -5,7 +5,7 @@ use crate::accounts::player_account;
 use borsh::{BorshDeserialize};
 
 pub enum Bet {
-  PAPER = 0,
+  PAPER,
   ROCK,
   SCISSORS,
   UNKNOWN
@@ -57,7 +57,7 @@ pub fn fight(player1: &AccountInfo, player2: &AccountInfo) -> BetResult {
     },
 
     Bet::UNKNOWN => match Bet::from_u32(player_2_data.bet) {
-      Bet::PAPER => BetResult::DRAW,
+      Bet::PAPER => BetResult::ERROR,
       Bet::ROCK => BetResult::ERROR,
       Bet::SCISSORS => BetResult::ERROR,
       Bet::UNKNOWN => BetResult::ERROR
