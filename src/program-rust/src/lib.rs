@@ -1,6 +1,7 @@
 mod command_handlers;
 mod accounts;
 mod config;
+mod bet;
 
 use borsh::{BorshDeserialize};
 use solana_program::{
@@ -24,7 +25,6 @@ pub fn process_instruction(
 ) -> ProgramResult {
     let accounts_iter = &mut accounts.iter();
     
-
     for account in accounts_iter {
         if account.is_signer {
             continue;
