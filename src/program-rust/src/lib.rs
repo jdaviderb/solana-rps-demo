@@ -15,6 +15,7 @@ use solana_program::{
 use crate::accounts::command;
 entrypoint!(process_instruction);
 
+
 pub fn process_instruction(
     program_id: &Pubkey,
     accounts: &[AccountInfo],
@@ -22,6 +23,7 @@ pub fn process_instruction(
 ) -> ProgramResult {
     let accounts_iter = &mut accounts.iter();
     
+    // validation account's ownership
     for account in accounts_iter {
         if account.is_signer {
             continue;
@@ -32,19 +34,23 @@ pub fn process_instruction(
         }
     }
 
+    // Serialize Command Data
     let command_data = command::Account::try_from_slice(&instruction_data)?;
-    return match command_data.command {
-        config::handlers::CREATE_BET_COMMAND => command_handlers::create_bet::handler(
+
+    // mapping command handlers
+    match command_handlers::Commands::from_code(command_data.command) {
+        command_handlers::Commands::CreateBet => command_handlers::create_bet::handler(
             program_id, 
             &accounts, 
             &instruction_data
         ),
 
-        config::handlers::FIGHT_COMMAND => command_handlers::fight::handler(
+        command_handlers::Commands::Fight => command_handlers::fight::handler(
             program_id, 
             &accounts, 
             &instruction_data
         ),
+
         _ => Err(ProgramError::IncorrectProgramId)
     }
 }

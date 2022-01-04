@@ -20,7 +20,6 @@ pub fn handler(
   let player1 = next_account_info(accounts_iter)?;
   let player2 = next_account_info(accounts_iter)?;
 
-
   let mut player_1_account = player_account::Account::try_from_slice(&player1.data.borrow())?;
   let mut player_2_account = player_account::Account::try_from_slice(&player2.data.borrow())?;
 
