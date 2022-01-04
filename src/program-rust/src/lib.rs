@@ -1,6 +1,7 @@
 mod command_handlers;
 mod accounts;
 mod config;
+mod validations;
 mod bet;
 
 use borsh::{BorshDeserialize};
@@ -21,19 +22,11 @@ pub fn process_instruction(
     accounts: &[AccountInfo],
     instruction_data: &[u8],
 ) -> ProgramResult {
-    let accounts_iter = &mut accounts.iter();
-    
     // validation account's ownership
-    for account in accounts_iter {
-        if account.is_signer {
-            continue;
-        }
-
-        if account.owner != program_id {
-            return Err(ProgramError::IncorrectProgramId);
-        }
+    if !validations::program_can_run(program_id, accounts) {
+        return Err(ProgramError::IncorrectProgramId);
     }
-
+    
     // Serialize Command Data
     let command_data = command::Account::try_from_slice(&instruction_data)?;
 

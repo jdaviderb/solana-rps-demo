@@ -8,7 +8,7 @@ use solana_program::{
 use borsh::{BorshDeserialize, BorshSerialize};
 use crate::accounts::player_account;
 use crate::bet;
-use crate::config;
+use crate::validations;
 
 pub fn handler(
   _program_id: &Pubkey,
@@ -23,11 +23,12 @@ pub fn handler(
   let mut player_1_account = player_account::Account::try_from_slice(&player1.data.borrow())?;
   let mut player_2_account = player_account::Account::try_from_slice(&player2.data.borrow())?;
 
-  if player1.lamports() < config::player::MIN_LAMPORTS || player2.lamports() < config::player::MIN_LAMPORTS {
-    return Err(ProgramError::IncorrectProgramId);
+
+  if !validations::players_can_fight(player1, player2) {
+    return Err(ProgramError::IncorrectProgramId)
   }
 
-  match bet::fight(player1, player2) {
+  match bet::fight(&player_1_account, &player_2_account) {
     bet::BetResult::DRAW => Err(ProgramError::IncorrectProgramId),
     bet::BetResult::WinnerPlayer1 => {
       // clean bets

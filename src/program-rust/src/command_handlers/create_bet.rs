@@ -7,7 +7,7 @@ use solana_program::{
 
 use borsh::{BorshDeserialize, BorshSerialize};
 use crate::accounts::{player_account, command};
-use crate::config;
+use crate::validations;
 
 pub fn handler(
   _program_id: &Pubkey,
@@ -20,15 +20,7 @@ pub fn handler(
   let mut player_account = player_account::Account::try_from_slice(&account.data.borrow())?;
   let command_data = command::Account::try_from_slice(&instruction_data)?;
 
-  if account.lamports() < config::player::MIN_LAMPORTS {
-    return Err(ProgramError::IncorrectProgramId);
-  }
-
-  if !config::player::VALID_BETS.contains(&command_data.data) {
-    return Err(ProgramError::IncorrectProgramId);
-  }
-
-  if player_account.bet > 0 {
+  if !validations::player_can_bet(account, &command_data, &player_account) {
     return Err(ProgramError::IncorrectProgramId);
   }
 

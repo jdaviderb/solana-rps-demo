@@ -1,8 +1,5 @@
-use solana_program::{
-  account_info::AccountInfo,
-};
-use crate::accounts::player_account;
-use borsh::{BorshDeserialize};
+use crate::accounts::player_account::Account;
+
 
 pub enum Bet {
   PAPER,
@@ -29,34 +26,32 @@ impl Bet {
   }
 }
 
-pub fn fight(player1: &AccountInfo, player2: &AccountInfo) -> BetResult {
-  let player_1_data = player_account::Account::try_from_slice(&player1.data.borrow()).unwrap();
-  let player_2_data = player_account::Account::try_from_slice(&player2.data.borrow()).unwrap();
+pub fn fight(player1: &Account, player2: &Account) -> BetResult {
 
-  match Bet::from_u32(player_1_data.bet) {
+  match Bet::from_u32(player1.bet) {
 
-    Bet::PAPER => match Bet::from_u32(player_2_data.bet) {
+    Bet::PAPER => match Bet::from_u32(player2.bet) {
       Bet::PAPER => BetResult::DRAW,
       Bet::ROCK => BetResult::WinnerPlayer1,
       Bet::SCISSORS => BetResult::WinnerPlayer2,
       Bet::UNKNOWN => BetResult::ERROR
     },
 
-    Bet::ROCK => match Bet::from_u32(player_2_data.bet) {
+    Bet::ROCK => match Bet::from_u32(player2.bet) {
       Bet::ROCK => BetResult::DRAW,
       Bet::PAPER => BetResult::WinnerPlayer2,
       Bet::SCISSORS => BetResult::WinnerPlayer1,
       Bet::UNKNOWN => BetResult::ERROR
     },
 
-    Bet::SCISSORS => match Bet::from_u32(player_2_data.bet) {
+    Bet::SCISSORS => match Bet::from_u32(player2.bet) {
       Bet::SCISSORS => BetResult::DRAW,
       Bet::PAPER => BetResult::WinnerPlayer1,
       Bet::ROCK => BetResult::WinnerPlayer2,
       Bet::UNKNOWN => BetResult::ERROR
     },
 
-    Bet::UNKNOWN => match Bet::from_u32(player_2_data.bet) {
+    Bet::UNKNOWN => match Bet::from_u32(player2.bet) {
       Bet::PAPER => BetResult::ERROR,
       Bet::ROCK => BetResult::ERROR,
       Bet::SCISSORS => BetResult::ERROR,
