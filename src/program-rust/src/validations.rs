@@ -5,8 +5,7 @@ use solana_program::{
 
 use crate::config;
 use crate::accounts::{
-  command,
-  player_account
+  command
 };
 
 pub fn players_can_fight(player1: &AccountInfo, player2: &AccountInfo) -> bool {
@@ -19,8 +18,7 @@ pub fn players_can_fight(player1: &AccountInfo, player2: &AccountInfo) -> bool {
 
 pub fn player_can_bet(
   account: &AccountInfo, 
-  command_data: &command::Account, 
-  player: &player_account::Account
+  command_data: &command::Account
 ) -> bool {
 
   if account.lamports() < config::player::MIN_LAMPORTS {
@@ -28,10 +26,6 @@ pub fn player_can_bet(
   }
 
   if !config::player::VALID_BETS.contains(&command_data.data) {
-    return false;
-  }
-
-  if player.bet > 0 {
     return false;
   }
 

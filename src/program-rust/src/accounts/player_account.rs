@@ -4,5 +4,6 @@ use borsh::{BorshDeserialize, BorshSerialize};
 pub struct Account {
   pub winners: u32,
   pub losses: u32,
-  pub bet: u32
+  pub bet: u32,
+  pub lp: u32
 }

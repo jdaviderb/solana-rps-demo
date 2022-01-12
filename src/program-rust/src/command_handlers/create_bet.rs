@@ -20,7 +20,7 @@ pub fn handler(
   let mut player_account = player_account::Account::try_from_slice(&account.data.borrow())?;
   let command_data = command::Account::try_from_slice(&instruction_data)?;
 
-  if !validations::player_can_bet(account, &command_data, &player_account) {
+  if !validations::player_can_bet(account, &command_data) {
     return Err(ProgramError::IncorrectProgramId);
   }
 
