@@ -1,6 +1,5 @@
 use crate::accounts::player_account::Account;
 
-
 pub enum Bet {
   PAPER,
   ROCK,
