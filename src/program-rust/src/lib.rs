@@ -16,7 +16,6 @@ use solana_program::{
 use crate::accounts::command;
 entrypoint!(process_instruction);
 
-
 pub fn process_instruction(
     program_id: &Pubkey,
     accounts: &[AccountInfo],
